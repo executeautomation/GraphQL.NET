@@ -14,6 +14,7 @@ namespace GraphQLProductApp.Repository
         List<Product> GetAllProducts();
 
         Product AddProduct(Product product);
+        Product GetProductByIdAndName(int id, string name);
     }
 
     public class ProductRepository : IProductRepository
@@ -34,16 +35,14 @@ namespace GraphQLProductApp.Repository
             context
                 .Products
                 .Include(x => x.Components)
-                .Where(x => x.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Id == id);
 
         public Product GetProductByName(string name)
         {
             return context
                 .Products
                 .Include(x => x.Components)
-                .Where(x => x.Name == name)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Name == name);
         }
 
         public Product AddProduct(Product product)
@@ -51,6 +50,14 @@ namespace GraphQLProductApp.Repository
             context.Products.Add (product);
             context.SaveChanges();
             return product;
+        }
+
+        public Product GetProductByIdAndName(int id, string name)
+        {
+            return context
+                .Products
+                .Include(x => x.Components)
+                .Single(x => x.Id == id && x.Name == name);
         }
     }
 }

@@ -9,39 +9,40 @@ namespace GraphQLProductApp.Controllers
     [Route("[controller]")]
     public class ComponentsController
     {
-        private readonly IComponentRepository componentRepository;
+        private readonly IComponentRepository _componentRepository;
 
         public ComponentsController(IComponentRepository componentRepository)
         {
-            this.componentRepository = componentRepository;
+            this._componentRepository = componentRepository;
         }
 
         [HttpGet]
         [Route("/[controller]/[action]/{id}")]
         public List<Components> GetComponentByProductId(int id)
         {
-            return componentRepository.GetComponentsById(id);
+            return _componentRepository.GetComponentsById(id);
         }
 
         [HttpGet]
         [Route("/[controller]/[action]/{id}")]
         public List<Components> GetComponentsByProductId(int id)
         {
-            return componentRepository.GetComponentsById(id);
+            return _componentRepository.GetComponentsById(id);
         }
+        
 
         [HttpPost]
         [Route("/[controller]/[action]")]
         public Components CreateComponent(Components components)
         {
-            return componentRepository.CreateComponent(components);
+            return _componentRepository.CreateComponent(components);
         }
 
         [HttpGet]
         [Route("/[controller]/[action]")]
         public List<Components> GetAllComponents()
         {
-            return componentRepository.GetComponents();
+            return _componentRepository.GetComponents();
         }
     }
 }
