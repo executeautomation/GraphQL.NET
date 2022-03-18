@@ -1,63 +1,102 @@
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using GraphQLProductApp.Data;
 
-namespace GraphQLProductApp.Repository
+namespace GraphQLProductApp.Repository;
+
+public interface IProductRepository
 {
-    public interface IProductRepository
+    Product GetProductById(int id);
+
+    Product GetProductByName(string name);
+
+    List<Product> GetAllProducts();
+
+    Product AddProduct(Product product);
+    Product GetProductByIdAndName(int id, string name);
+}
+
+public class ProductRepository : IProductRepository
+{
+    private readonly ProductDbContext _context;
+
+    public ProductRepository(ProductDbContext context)
     {
-        Product GetProductById(int id);
-
-        Product GetProductByName(string name);
-
-        List<Product> GetAllProducts();
-
-        Product AddProduct(Product product);
-        Product GetProductByIdAndName(int id, string name);
+        _context = context;
     }
 
-    public class ProductRepository : IProductRepository
+    public List<Product> GetAllProducts()
     {
-        private readonly ProductDbContext context;
-
-        public ProductRepository(ProductDbContext context)
+        return _context.Products.Select(x => new Product
         {
-            this.context = context;
-        }
+            ProductId = x.ProductId,
+            Name = x.Name,
+            Price = x.Price,
+            ProductType = x.ProductType,
+            Components = x.Components.Select(c => new Components
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            }).ToList()
+        }).ToList();
+    }
 
-        public List<Product> GetAllProducts()
+    public Product GetProductById(int id)
+    {
+        return _context.Products.Select(x => new Product
         {
-            return context.Products.ToList();
-        }
+            ProductId = x.ProductId,
+            Name = x.Name,
+            Price = x.Price,
+            ProductType = x.ProductType,
+            Components = x.Components.Select(c => new Components
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            }).ToList()
+        }).FirstOrDefault(x => x.ProductId == id);
+    }
 
-        public Product GetProductById(int id) =>
-            context
-                .Products
-                .Include(x => x.Components)
-                .FirstOrDefault(x => x.Id == id);
-
-        public Product GetProductByName(string name)
+    public Product GetProductByName(string name)
+    {
+        return _context.Products.Select(x => new Product
         {
-            return context
-                .Products
-                .Include(x => x.Components)
-                .FirstOrDefault(x => x.Name == name);
-        }
+            ProductId = x.ProductId,
+            Name = x.Name,
+            Price = x.Price,
+            ProductType = x.ProductType,
+            Components = x.Components.Select(c => new Components
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            }).ToList()
+        }).FirstOrDefault(x => x.Name == name);
+    }
 
-        public Product AddProduct(Product product)
-        {
-            context.Products.Add (product);
-            context.SaveChanges();
-            return product;
-        }
+    public Product AddProduct(Product product)
+    {
+        _context.Products.Add(product);
+        _context.SaveChanges();
+        return product;
+    }
 
-        public Product GetProductByIdAndName(int id, string name)
+    public Product GetProductByIdAndName(int id, string name)
+    {
+        return _context.Products.Select(x => new Product
         {
-            return context
-                .Products
-                .Include(x => x.Components)
-                .Single(x => x.Id == id && x.Name == name);
-        }
+            ProductId = x.ProductId,
+            Name = x.Name,
+            Price = x.Price,
+            ProductType = x.ProductType,
+            Components = x.Components.Select(c => new Components
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            }).ToList()
+        }).Single(x => x.ProductId == id && x.Name == name);
     }
 }

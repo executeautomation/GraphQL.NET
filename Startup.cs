@@ -1,144 +1,141 @@
 using System.Text;
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
+using GraphQLProductApp.Controllers;
 using GraphQLProductApp.Data;
 using GraphQLProductApp.GraphQL;
 using GraphQLProductApp.Repository;
-using GraphQL.Server;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using GraphQL.Server.Ui.Playground;
-using GraphQLProductApp.Controllers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
-namespace GraphQLProductApp
+namespace GraphQLProductApp;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            services
-                .AddSwaggerGen(c =>
-                {
-                    c
-                        .SwaggerDoc("v1",
-                        new OpenApiInfo {
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers();
+        services
+            .AddSwaggerGen(c =>
+            {
+                c
+                    .SwaggerDoc("v1",
+                        new OpenApiInfo
+                        {
                             Title = "GraphQLProductApp",
                             Version = "v1"
                         });
-                    c.OperationFilter<SwaggerFileOperationFilter>();
-                    // To Enable authorization using Swagger (JWT)
-                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                c.OperationFilter<SwaggerFileOperationFilter>();
+                // To Enable authorization using Swagger (JWT)
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\""
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer",
-                        BearerFormat = "JWT",
-                        In = ParameterLocation.Header,
-                        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-                    });
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
+                        new OpenApiSecurityScheme
                         {
-                            new OpenApiSecurityScheme
+                            Reference = new OpenApiReference
                             {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            new string[] {}
-
-                        }
-                    });
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
                 });
-            services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])) //Configuration["JwtToken:SecretKey"]
-                };
             });
-
-            services
-                .AddDbContext<ProductDbContext>(option =>
-                    option.UseSqlite(@"Data Source=Product.db"));
-
-            services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<IComponentRepository, ComponentRepository>();
-
-            services.AddScoped<DataSchema>();
-
-            services
-                .AddGraphQL()
-                .AddSystemTextJson()
-                .AddGraphTypes(typeof (DataSchema), ServiceLifetime.Scoped);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app,
-            IWebHostEnvironment env,
-            ProductDbContext productDbContext
-        )
+        services.AddAuthentication(option =>
         {
-            if (env.IsDevelopment())
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app
-                    .UseSwaggerUI(c =>
-                        c
-                            .SwaggerEndpoint("/swagger/v1/swagger.json",
-                            "GraphQLProductApp v1"));
-                
-                
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Issuer"],
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])) //Configuration["JwtToken:SecretKey"]
+            };
+        });
 
-                productDbContext.Database.EnsureCreated();
-            }
+        services
+            .AddDbContext<ProductDbContext>(option =>
+                option.UseSqlite(@"Data Source=Product.db"));
 
-            app.UseHttpsRedirection();
+        services.AddTransient<IProductRepository, ProductRepository>();
+        services.AddTransient<IComponentRepository, ComponentRepository>();
 
-            app.UseRouting();
+        services.AddScoped<DataSchema>();
 
-            app.UseAuthorization();
+        services
+            .AddGraphQL()
+            .AddSystemTextJson()
+            .AddGraphTypes(typeof(DataSchema), ServiceLifetime.Scoped);
+    }
 
-            app.UseGraphQL<DataSchema>();
-            app.UseGraphQLPlayground(options: new GraphQLPlaygroundOptions());
-
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(
+        IApplicationBuilder app,
+        IWebHostEnvironment env,
+        ProductDbContext productDbContext
+    )
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
             app
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+                .UseSwaggerUI(c =>
+                    c
+                        .SwaggerEndpoint("/swagger/v1/swagger.json",
+                            "GraphQLProductApp v1"));
 
-            app.UseAuthentication();
-            productDbContext.Seed();
+
+            productDbContext.Database.EnsureCreated();
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseGraphQL<DataSchema>();
+        app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
+
+        app
+            .UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+        app.UseAuthentication();
+        productDbContext.Seed();
     }
 }
