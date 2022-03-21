@@ -73,7 +73,7 @@ public class AuthenticateController : BaseController
 
         //Validate the User Credentials    
         //Demo Purpose, I have Passed HardCoded User Information    
-        if (login.UserName == "Jay") user = new LoginModel { UserName = "Jay", Password = "123456" };
+        if (login.UserName == "KK") user = new LoginModel { UserName = "KK", Password = "123456" };
         return user;
     }
 
