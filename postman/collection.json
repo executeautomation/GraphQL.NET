@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "f5335372-f425-4836-94fa-54ec7438d8df",
+		"name": "GraphQLApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST - Authentication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"TOKEN\", pm.response.json().token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"KK\",\n  \"password\": \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AUTH_URL}}",
+					"host": [
+						"{{AUTH_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET - Product By ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Keyboard\");",
+							"});",
+							"",
+							"pm.test(\"Authorization of request is present\", function () {",
+							"    pm.request.to.have.header(\"Authorization\");",
+							"});",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Verify Complex response from Text\", () => {",
+							"",
+							"    pm.expect(pm.response.text()).to.deep.include(\"Glowing Keys\");",
+							"",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify Complex response from JSON\", () => {",
+							"    const jsonData = pm.response.json();",
+							"    const componentData = jsonData.components;",
+							"    pm.expect(componentData).to.be.an(\"array\");",
+							"    const findComponent = componentData.find(m => m.name === \"Keys\");",
+							"    pm.expect(findComponent.description).to.equals(\"Glowing Keys\")",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/Product/GetProductById/1",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"Product",
+						"GetProductById",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
