@@ -18,9 +18,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore GraphQL.NET.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build GraphQL.NET.sln --no-restore
       
     - uses: matt-ball/newman-action@master
       with:
