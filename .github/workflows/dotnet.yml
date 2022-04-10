@@ -16,10 +16,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore GraphQL.NET.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build GraphQL.NET.sln --no-restore
+      
+    - name: Run the app
+      run: dotnet run
+      
+    - uses: matt-ball/newman-action@master
+      with:
+        collection: ./postman/collection.json
+        environment: ./postman/environment.json
+        
     - name: Test
       run: dotnet test --no-build --verbosity normal
