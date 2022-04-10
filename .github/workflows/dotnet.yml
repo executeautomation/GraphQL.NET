@@ -21,5 +21,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+      
+    - uses: matt-ball/newman-action@master
+      with:
+        collection: /postman/collection.json
+        environment: /postman/environment.json
+        
     - name: Test
       run: dotnet test --no-build --verbosity normal
