@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+echo "Getting all files in the directory"
+
+ls -l
+
 # Run the dotnet app
 dotnet run --project ./GraphQL.NET.sln
 
