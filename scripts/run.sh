@@ -6,6 +6,7 @@ ls -l
 
 # Run the dotnet app
 dotnet run GraphQL.NET.sln
+nohup k kestrel &
 
 #install newman
 npm install -g newman
