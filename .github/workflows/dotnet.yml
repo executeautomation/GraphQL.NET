@@ -21,14 +21,9 @@ jobs:
       run: dotnet restore GraphQL.NET.sln
     - name: Build
       run: dotnet build GraphQL.NET.sln --no-restore
-      
-    - name: Run the app
-      run: dotnet run
-      
-    - uses: matt-ball/newman-action@master
-      with:
-        collection: ./postman/collection.json
-        environment: ./postman/environment.json
+    - name: Start app and test
+      run : |
+          sh ./scripts/run.sh
         
     - name: Test
       run: dotnet test --no-build --verbosity normal
