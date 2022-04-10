@@ -24,8 +24,8 @@ jobs:
       
     - uses: matt-ball/newman-action@master
       with:
-        collection: /postman/collection.json
-        environment: /postman/environment.json
+        collection: ./postman/collection.json
+        environment: ./postman/environment.json
         
     - name: Test
       run: dotnet test --no-build --verbosity normal
