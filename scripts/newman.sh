@@ -11,8 +11,8 @@ newman run ./postman/collection.json -e ./postman/environment.json --reporters c
 if [ $? -eq 0 ] 
 then 
   echo "Successfully executed newman test" 
-  exit 0 
+  exit
 else 
   echo "Failing executing newman test" >&2 
-  exit 0
+  exit
 fi
