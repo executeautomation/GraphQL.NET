@@ -1,12 +1,4 @@
-#!/usr/bin/env sh
-
-set -e
-set -x
-
-cd "$(dirname "${0}")/.."
-
-export COMPOSE_HTTP_TIMEOUT=200
-
+#!/usr/bin/env s
 docker-compose build
 
 docker-compose up -d graphql_api
@@ -19,4 +11,3 @@ if [ $exit_code -eq 0 ]; then
 else
     echo "Test failed"
 fi
-
