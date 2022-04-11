@@ -4,4 +4,5 @@ WORKDIR /app
 
 COPY . ./
 
+RUN chmod +x ./scripts/newman.sh
 ENTRYPOINT [ "./scripts/newman.sh" ]
