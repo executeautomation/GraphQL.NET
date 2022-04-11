@@ -16,3 +16,5 @@ else
   echo "Failing executing newman test" >&2 
   exit
 fi
+
+
