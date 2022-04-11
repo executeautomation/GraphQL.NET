@@ -4,7 +4,7 @@
 	"values": [
 		{
 			"key": "BASE_URL",
-			"value": "https://localhost:5001",
+			"value": "http://graphqlapi:5001",
 			"type": "default",
 			"enabled": true
 		},

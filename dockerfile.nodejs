@@ -1,3 +1,7 @@
 FROM node:12.18.1
 
-ENTRYPOINT [ "/scripts/newman.sh" ]
+WORKDIR /app
+
+COPY . ./
+
+ENTRYPOINT [ "./scripts/newman.sh" ]
