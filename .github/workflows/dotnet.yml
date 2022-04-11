@@ -13,19 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build Docker compose file
-      run: docker-compose -f "docker-compose.yml" build
-    - name: Run Docker compose
-      run: |
-        docker-compose -f "docker-compose.yml" up
-        exit_code=$(docker inspect nodejs -f '{{ .State.ExitCode }}')
-        if [ $exit_code -eq 0 ]; then
-            exit $exit_code
-        else
-            echo "Test failed"
-        fi
-        
-    
-    #- name: Start containers
-     # run : |
-      #  sh ./scripts/run.sh
+    - name: Start Running containers and postman tests
+      run : |
+        sh ./scripts/run.sh
