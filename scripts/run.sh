@@ -9,7 +9,7 @@ export COMPOSE_HTTP_TIMEOUT=200
 
 docker-compose build
 
-docker-compose up -d graphqlapi
+docker-compose up -d graphql_api
 docker-compose up --no-deps nodejs
 
 exit_code=$(docker inspect nodejs -f '{{ .State.ExitCode }}')
