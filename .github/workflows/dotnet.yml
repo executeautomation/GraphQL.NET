@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Run Docker compose file
-      run: docker-compose -f "docker-compose.yml" up -d --build
+    - name: Build Docker compose file
+      run: docker-compose -f "docker-compose.yml" build
+    - name: Run Docker compose
+      run: docker-compose -f "docker-compose.yml" up
