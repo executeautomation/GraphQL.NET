@@ -109,7 +109,7 @@ public class Startup
         ProductDbContext productDbContext
     )
     {
-        if (env.IsDevelopment())
+        if (env.IsDevelopment() || env.IsProduction())
         {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
