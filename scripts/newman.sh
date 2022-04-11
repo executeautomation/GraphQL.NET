@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ls -l 
 #install newman
 npm install -g newman

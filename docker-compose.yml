@@ -12,9 +12,9 @@ services:
     networks:
       - ea_network
 
-  nodejs:
-    image: postman_test
-    container_name: nodejs
+  newman_test:
+    image: newman_test
+    container_name: newmantest
     build: 
       context: .
       dockerfile: dockerfile.nodejs
