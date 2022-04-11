@@ -12,8 +12,8 @@ services:
     networks:
       - ea_network
 
-  newman_test:
-    image: newman_test
+  newman:
+    image: newman
     container_name: newmantest
     build: 
       context: .
