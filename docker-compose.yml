@@ -1,0 +1,28 @@
+version: '3.4'
+services:
+  graphql_api:
+    image: graphql_api
+    container_name: graphqlapi
+    build:
+      context: .
+      dockerfile: dockerfile.dotnet
+    restart: on-failure      
+    ports:
+      - 5001:8001
+    networks:
+      - ea_network
+
+  nodejs:
+    image: postman_test
+    container_name: nodejs
+    build: 
+      context: .
+      dockerfile: dockerfile.nodejs
+    depends_on:
+      - graphql_api
+    networks:
+      - ea_network
+
+
+networks: 
+   ea_network:
