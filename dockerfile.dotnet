@@ -15,4 +15,4 @@ ENV ASPNETCORE_URLS=http://*:5001
 EXPOSE 5001
 WORKDIR /app
 COPY --from=base /app/out .
-ENTRYPOINT ["dotnet", "GraphQL.NET.dll", "--launch-profile GraphQLProd"]
+ENTRYPOINT ["dotnet", "GraphQL.NET.dll", "--launch-profile Prod"]

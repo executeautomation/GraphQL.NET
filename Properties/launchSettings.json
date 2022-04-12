@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "GraphQLProductApp": {
+    "LocalDev": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
@@ -27,7 +27,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "GraphQLProd": {
+    "Prod": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
