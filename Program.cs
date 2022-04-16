@@ -15,8 +15,8 @@ public class Program
     {
         return Host.CreateDefaultBuilder(args)
         .ConfigureAppConfiguration((hostingContext, config) => {
-            config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            config.AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+            config.AddJsonFile("settings/appsettings.json", optional: true, reloadOnChange: true);
+            config.AddJsonFile($"settings/appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
             config.AddEnvironmentVariables();
         })
         .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });

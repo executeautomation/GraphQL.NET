@@ -5,7 +5,7 @@ services:
     container_name: graphqlapi
     build:
       context: .
-      dockerfile: dockerfile.dotnet
+      dockerfile: dockerfiles/dockerfile.dotnet
     restart: on-failure      
     ports:
       - 5001:8001
@@ -17,7 +17,7 @@ services:
     container_name: newmantest
     build: 
       context: .
-      dockerfile: dockerfile.nodejs
+      dockerfile: dockerfiles/dockerfile.nodejs
     depends_on:
       - graphql_api
     networks:
